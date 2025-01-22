@@ -1,0 +1,29 @@
+{
+    "name": "R Development",
+    "image": "rocker/tidyverse:latest",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "REditorSupport.r",
+                "RDebugger.r-debugger",
+                "quarto.quarto"
+            ],
+            "settings": {
+                "r.rterm.linux": "/usr/local/bin/R",
+                "r.bracketedPaste": true,
+                "r.plot.useHttpgd": true
+            }
+        }
+    },
+
+    "features": {
+        "ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
+        "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
+            "packages": "tidyverse,devtools,rmarkdown,remotes"
+        }
+    },
+
+    "forwardPorts": [8787],
+    "postCreateCommand": "R -q -e 'install.packages(c(\"languageserver\", \"httpgd\"))'",
+}
