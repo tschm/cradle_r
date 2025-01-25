@@ -1,9 +1,12 @@
 name: Bump version
 
 on:
-  push:
-    branches:
-      - main
+ workflow_run:
+   workflows: ["CI"]  # Name of the test workflow
+   types:
+     - completed
+   branches:
+     - main
 
 permissions:
   contents: write
