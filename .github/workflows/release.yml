@@ -29,10 +29,19 @@ jobs:
       #    name: Release ${{ steps.tag_version.outputs.new_tag }}
       #    body: ${{ steps.tag_version.outputs.changelog }}
 
+      - name: Create tag
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ steps.tag_version.outputs.new_tag }}',
+              sha: context.sha
+            })
+
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          generate_release_notes: true          
 
-
-          
+          generate_release_notes: true
