@@ -22,6 +22,42 @@ jobs:
       - name: Checkout [${{ github.repository }}]
         uses: actions/checkout@v4
 
+      # Verify CI Workflow status
+      - name: Check CI Workflow Status
+        id: check_ci
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: runs } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'CI', // Replace with CI workflow name (or file path)
+              branch: 'main',
+              status: 'completed'
+            });
+            const ciRun = runs.workflow_runs.find(run => run.conclusion === 'success');
+            if (!ciRun) {
+              core.setFailed('The CI workflow did not succeed.');
+            }
+
+      # Verify pre-commit.ci Workflow status
+      - name: Check pre-commit.ci Workflow Status
+        id: check_pre_commit
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: runs } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'pre-commit.ci', // Replace with pre-commit.ci workflow name (or file path)
+              branch: 'main',
+              status: 'completed'
+            });
+            const preCommitRun = runs.workflow_runs.find(run => run.conclusion === 'success');
+            if (!preCommitRun) {
+              core.setFailed('The pre-commit.ci workflow did not succeed.');
+            }
+
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
