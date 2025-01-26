@@ -2,59 +2,20 @@ name: Bump version
 
 on:
   workflow_run:
-    workflows:
-      - "CI"
-      - "pre-commit.ci"
-
-    types:
-      - completed
+    workflows: ["CI"]
+    types: [completed]
 
 permissions:
   contents: write
 
 jobs:
-  check-workflows:
-    runs-on: ubuntu-latest
-    outputs:
-      all_success: ${{ steps.set-output.outputs.all_success }}
-    steps:
-      - name: Check workflow statuses
-        id: set-output
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const ciRun = await github.rest.actions.listWorkflowRuns({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'CI', // Replace with your actual CI workflow name or file path
-              branch: 'main',
-              status: 'completed'
-            });
-
-            const preCommitRun = await github.rest.actions.listWorkflowRuns({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'pre-commit.ci', // Replace with your actual pre-commit workflow name or file path
-              branch: 'main',
-              status: 'completed'
-            });
-
-            const ciSuccess = ciRun.data.workflow_runs.some(run => run.conclusion === 'success');
-            const preCommitSuccess = preCommitRun.data.workflow_runs.some(run => run.conclusion === 'success');
-
-            if (ciSuccess && preCommitSuccess) {
-              core.setOutput('all_success', 'true');
-            } else {
-              core.setOutput('all_success', 'false');
-            }
-
   build:
-    needs: check-workflows
-    if: needs.check-workflows.outputs.all_success == 'true' && github.event.workflow_run.head_branch == 'main'
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout [${{ github.repository }}]
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Bump version and push tag
         id: tag_version
