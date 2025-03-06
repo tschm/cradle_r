@@ -1,30 +1,29 @@
 {
-    "name": "Marimo Dev Container",
-    "image": "mcr.microsoft.com/devcontainers/python:3.12",
-    "hostRequirements": {
-        "cpus": 4
-    },
-    "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {}
-    },
-    "forwardPorts": [8080],
+    "name": "R Development",
+    "image": "rocker/tidyverse:latest",
+
     "customizations": {
         "vscode": {
-            "settings": {
-                "python.defaultInterpreterPath": ".venv/bin/python",
-                "python.linting.enabled": true,
-                "python.linting.pylintEnabled": true,
-                "marimo.pythonPath": ".venv/bin/python",
-                "marimo.marimoPath": ".venv/bin/marimo"
-            },
             "extensions": [
-                "ms-python.python",
-                "ms-python.vscode-pylance",
-                "marimo-team.vscode-marimo"
-            ]
+                "REditorSupport.r",
+                "RDebugger.r-debugger",
+                "quarto.quarto"
+            ],
+            "settings": {
+                "r.rterm.linux": "/usr/local/bin/R",
+                "r.bracketedPaste": true,
+                "r.plot.useHttpgd": true
+            }
         }
     },
-    "onCreateCommand": ".devcontainer/startup.sh",
-    "postStartCommand": "uv run marimo --yes edit --host=localhost --port=8080 --headless --no-token",
-    "remoteUser": "vscode"
+
+    "features": {
+        "ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
+        "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
+            "packages": "tidyverse,devtools,rmarkdown,remotes"
+        }
+    },
+
+    "forwardPorts": [8787],
+    "postCreateCommand": "R -q -e 'install.packages(c(\"languageserver\", \"httpgd\"))'",
 }

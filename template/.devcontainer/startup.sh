@@ -1,5 +1,7 @@
 #!/bin/bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-uv venv
-uv pip install --no-cache-dir marimo
-uv pip install --no-cache-dir -r requirements.txt
+#apt update
+#apt install software-properties-common apt-transport-https ca-certificates curl
+
+#add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
+#curl -fsSL https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc
+#gpg --dearmor -o /usr/share/keyrings/r-archive-keyring.gpg
