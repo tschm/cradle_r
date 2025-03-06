@@ -1,10 +1,5 @@
 # additional questions
 ---
-use_devcontainer:
-    type: bool
-    default: false
-    help: Do you want to support a DevContainer?
-
 use_latex:
     type: bool
     default: false
