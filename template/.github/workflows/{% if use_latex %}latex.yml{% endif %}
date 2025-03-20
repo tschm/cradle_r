@@ -6,6 +6,7 @@ on:
 # write to the draft branch
 permissions:
   contents: write
+  actions: read
 
 jobs:
   latex:
